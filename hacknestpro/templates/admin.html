@@ -14,17 +14,20 @@
 
     <style>
         :root {
-            --bg: #030712;
-            --sidebar-bg: #090d16;
-            --card: #0e1320;
-            --border: rgba(6, 182, 212, 0.15);
-            --cyan: #06b6d4;
-            --cyan-glow: rgba(6, 182, 212, 0.35);
+            --bg: #0c0806;
+            --sidebar-bg: #120c09;
+            --card: #18110e;
+            --border: rgba(255, 87, 34, 0.08);
+            --border-hover: rgba(255, 87, 34, 0.25);
+            --cyan: #ff5722;
+            --cyan-glow: rgba(255, 87, 34, 0.15);
             --blue: #3b82f6;
             --text-main: #ffffff;
-            --text-muted: #94a3b8;
+            --text-muted: #8c827d;
             --green: #10b981;
             --red: #ef4444;
+            --accent: #ff5722;
+            --accent-hover: #e64a19;
         }
 
         * {
@@ -36,9 +39,14 @@
         body, html {
             background-color: var(--bg);
             color: var(--text-main);
-            font-family: 'Inter', sans-serif;
+            font-family: 'Poppins', sans-serif;
             height: 100vh;
             overflow: hidden;
+        }
+
+        /* Custom Orange Cursor */
+        html, body, a, button, input, select, textarea, [role="button"] {
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20"><path fill="%23ff5722" stroke="%23ffffff" stroke-width="1.5" d="M2.5,2v13.5l3.8-3.8l2.6,5.1l2.4-1.2l-2.6-5.1h5.3z"/></svg>') 1 1, auto !important;
         }
 
         /* Dashboard Split Layout */
@@ -78,9 +86,8 @@
         }
 
         .macbease-logo span {
-            background: linear-gradient(180deg, #38bdf8 30%, #0ea5e9 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: var(--accent);
+            -webkit-text-fill-color: var(--accent);
         }
 
         .menu-list {
@@ -114,9 +121,9 @@
 
         .menu-item.active {
             color: #ffffff;
-            background: rgba(6, 182, 212, 0.12);
-            border: 1px solid rgba(6, 182, 212, 0.25);
-            box-shadow: 0 0 15px rgba(6, 182, 212, 0.1);
+            background: rgba(255, 87, 34, 0.1);
+            border: 1px solid rgba(255, 87, 34, 0.2);
+            box-shadow: 0 0 15px rgba(255, 87, 34, 0.05);
         }
 
         .menu-item svg {
@@ -142,8 +149,8 @@
             width: 100%;
             height: 100%;
             background-image:
-                linear-gradient(to right, rgba(6, 182, 212, 0.02) 1.5px, transparent 1.5px),
-                linear-gradient(to bottom, rgba(6, 182, 212, 0.02) 1.5px, transparent 1.5px);
+                linear-gradient(to right, rgba(255, 87, 34, 0.015) 1.5px, transparent 1.5px),
+                linear-gradient(to bottom, rgba(255, 87, 34, 0.015) 1.5px, transparent 1.5px);
             background-size: 30px 30px;
             pointer-events: none;
             z-index: 0;
@@ -178,7 +185,7 @@
         }
 
         .panel-title span {
-            background: linear-gradient(to right, #06b6d4, #3b82f6);
+            background: linear-gradient(to right, var(--accent), #ff8a65);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -220,8 +227,8 @@
 
         .stat-footer-tag {
             font-size: 11px;
-            background: rgba(6, 182, 212, 0.08);
-            border: 1px solid rgba(6, 182, 212, 0.2);
+            background: rgba(255, 87, 34, 0.08);
+            border: 1px solid rgba(255, 87, 34, 0.2);
             padding: 2px 8px;
             border-radius: 6px;
             color: var(--cyan);
@@ -251,7 +258,7 @@
         }
 
         thead {
-            background: rgba(6, 182, 212, 0.04);
+            background: rgba(255, 87, 34, 0.03);
             border-bottom: 1px solid var(--border);
         }
 
@@ -270,7 +277,7 @@
         }
 
         tbody tr:hover {
-            background: rgba(6, 182, 212, 0.02);
+            background: rgba(255, 87, 34, 0.015);
         }
 
         td {
@@ -291,7 +298,7 @@
             width: 36px;
             height: 36px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #06b6d4, #3b82f6);
+            background: linear-gradient(135deg, var(--accent), #ff8a65);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -369,9 +376,9 @@
         }
 
         .btn-promote {
-            background: rgba(6, 182, 212, 0.1);
-            border: 1px solid rgba(6, 182, 212, 0.3);
-            color: var(--cyan);
+            background: rgba(255, 87, 34, 0.1);
+            border: 1px solid rgba(255, 87, 34, 0.3);
+            color: var(--accent);
             font-size: 12.5px;
             font-weight: 600;
             padding: 6px 12px;
@@ -381,7 +388,8 @@
         }
 
         .btn-promote:hover {
-            background: rgba(6, 182, 212, 0.2);
+            background: rgba(255, 87, 34, 0.2);
+            box-shadow: 0 0 10px rgba(255, 87, 34, 0.15);
         }
 
         /* Forms in Admin panels */
@@ -428,7 +436,7 @@
         .form-input:focus {
             outline: none;
             border-color: var(--cyan);
-            box-shadow: 0 0 8px rgba(6, 182, 212, 0.2);
+            box-shadow: 0 0 8px rgba(255, 87, 34, 0.2);
         }
 
         .form-textarea {
@@ -437,7 +445,7 @@
         }
 
         .btn-submit {
-            background: linear-gradient(180deg, #06b6d4 0%, #0891b2 100%);
+            background: linear-gradient(180deg, var(--accent) 0%, var(--accent-hover) 100%);
             border: none;
             color: #ffffff;
             font-weight: 600;
@@ -450,7 +458,7 @@
         }
 
         .btn-submit:hover {
-            box-shadow: 0 0 15px rgba(6, 182, 212, 0.4);
+            box-shadow: 0 0 15px rgba(255, 87, 34, 0.4);
             transform: translateY(-1px);
         }
 
@@ -502,6 +510,12 @@
                     <button class="menu-item" onclick="switchTab('submissions')">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
                         <span>Project Submissions</span>
+                    </button>
+                </li>
+                <li>
+                    <button class="menu-item" onclick="switchTab('participants')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        <span>Participants</span>
                     </button>
                 </li>
                 <li>
@@ -830,6 +844,81 @@
                     </div>
                 </div>
 
+                <!-- ── PANEL: PARTICIPANTS ── -->
+                <div id="panel-participants" class="tab-panel">
+                    <h1 class="panel-title">Participant <span>Moderation</span></h1>
+
+                    <div class="search-container">
+                        <input type="text" id="participant-search" class="form-input" placeholder="Search participants by name, email, or hackathon..." onkeyup="filterParticipants()">
+                    </div>
+
+                    <div class="table-wrapper">
+                        <div class="table-responsive">
+                            <table id="participants-table">
+                                <thead>
+                                    <tr>
+                                        <th>Participant Account</th>
+                                        <th>Registered Hackathon</th>
+                                        <th>Email</th>
+                                        <th>Date Joined</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="avatar-cell">
+                                                <div class="avatar-circle">AS</div>
+                                                <span class="participant-name">Arjun Sharma</span>
+                                            </div>
+                                        </td>
+                                        <td>Cosmic Codefest 2026</td>
+                                        <td>arjun@gmail.com</td>
+                                        <td>July 10, 2026</td>
+                                        <td><button class="btn-delete">Remove</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="avatar-cell">
+                                                <div class="avatar-circle">PP</div>
+                                                <span class="participant-name">Priya Patel</span>
+                                            </div>
+                                        </td>
+                                        <td>AI Genesis Global Hack</td>
+                                        <td>priya@gmail.com</td>
+                                        <td>July 06, 2026</td>
+                                        <td><button class="btn-delete">Remove</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="avatar-cell">
+                                                <div class="avatar-circle">RD</div>
+                                                <span class="participant-name">Rohan Das</span>
+                                            </div>
+                                        </td>
+                                        <td>Cosmic Codefest 2026</td>
+                                        <td>rohan@gmail.com</td>
+                                        <td>July 11, 2026</td>
+                                        <td><button class="btn-delete">Remove</button></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="avatar-cell">
+                                                <div class="avatar-circle">SC</div>
+                                                <span class="participant-name">Sarah Connor</span>
+                                            </div>
+                                        </td>
+                                        <td>Web Galaxy Challenge</td>
+                                        <td>sarah@connor.org</td>
+                                        <td>June 20, 2026</td>
+                                        <td><button class="btn-delete">Remove</button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- ── PANEL 6: CERTIFICATES ── -->
                 <div id="panel-certificates" class="tab-panel">
                     <h1 class="panel-title">Certificate <span>Management</span></h1>
@@ -1005,6 +1094,90 @@
                 }
             });
         }
+
+        // Live filtration on participant rows inside participant moderation
+        function filterParticipants() {
+            const query = document.getElementById('participant-search').value.toLowerCase();
+            const rows = document.querySelectorAll('#participants-table tbody tr');
+            
+            rows.forEach(row => {
+                const name = row.querySelector('.participant-name').textContent.toLowerCase();
+                const email = row.cells[2].textContent.toLowerCase();
+                const hackathon = row.cells[1].textContent.toLowerCase();
+                
+                if (name.includes(query) || email.includes(query) || hackathon.includes(query)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        function updateAdminStats() {
+            // Students count
+            const studentRows = Array.from(document.querySelectorAll("#users-table tbody tr"));
+            const studentsCount = studentRows.filter(row => {
+                const badge = row.querySelector(".role-badge");
+                return badge && badge.textContent.trim() === "Student";
+            }).length;
+
+            // Organizers count
+            const organizersCount = studentRows.filter(row => {
+                const badge = row.querySelector(".role-badge");
+                return badge && badge.textContent.trim() === "Organizer";
+            }).length;
+
+            // Orgs / Clubs count
+            const orgsCount = document.querySelectorAll("#panel-organizations tbody tr").length;
+            const judgesCount = Math.max(1, orgsCount * 2);
+
+            // Hackathons
+            const hackathonRows = Array.from(document.querySelectorAll("#panel-hackathons tbody tr"));
+            const hackathonsCount = hackathonRows.length;
+
+            // Active Hackathons
+            const activeHackathonsCount = hackathonRows.filter(row => {
+                const status = row.querySelector("td:nth-child(4)");
+                return status && (status.textContent.trim() === "Ongoing" || status.textContent.trim() === "Upcoming");
+            }).length;
+
+            // Submissions
+            const submissionsCount = document.querySelectorAll("#panel-submissions tbody tr").length;
+
+            // Update DOM
+            const statValues = document.querySelectorAll(".stats-grid .stat-value");
+            if (statValues[0]) statValues[0].innerText = studentsCount;
+            if (statValues[1]) statValues[1].innerText = organizersCount;
+            if (statValues[2]) statValues[2].innerText = judgesCount;
+            if (statValues[3]) statValues[3].innerText = hackathonsCount;
+            if (statValues[4]) statValues[4].innerText = submissionsCount;
+            if (statValues[5]) statValues[5].innerText = activeHackathonsCount;
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            updateAdminStats();
+        });
+
+        // Handle item deletion, cancellation, and removal dynamically
+        document.addEventListener('click', function(e) {
+            if (e.target && (e.target.classList.contains('btn-delete') || e.target.textContent === 'Cancel Event' || e.target.textContent === 'Delete Log' || e.target.textContent === 'Remove')) {
+                const btn = e.target;
+                // Exclude the user deletion form submissions
+                if (btn.type === 'submit') return;
+                
+                e.preventDefault();
+                const row = btn.closest('tr');
+                if (row && confirm('Are you sure you want to delete/remove this item?')) {
+                    row.style.transition = 'all 0.3s ease';
+                    row.style.opacity = '0';
+                    row.style.transform = 'translateX(-20px)';
+                    setTimeout(() => {
+                        row.remove();
+                        updateAdminStats();
+                    }, 300);
+                }
+            }
+        });
     </script>
 </body>
 

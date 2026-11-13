@@ -103,6 +103,9 @@ def orilogin_view(request):
             
     return render(request, 'orilogin.html')
 
+def orihome_view(request):
+    return render(request, 'orihome.html')
+
 def studenthome_view(request):
     profile = None
     teams = []
@@ -174,17 +177,7 @@ def studenthome_view(request):
                         message=f"Successfully created team '{team_name}' for '{hackathon}'! Invite Code: {team.code}",
                         notification_type='INFO'
                     )
-                    # Send email
-                    try:
-                        send_mail(
-                            subject=f"HackNest - Team '{team_name}' Created Successfully",
-                            message=f"Hi {request.user.first_name or request.user.username},\n\nYou have successfully created your team '{team_name}' for '{hackathon}' on HackNest.\n\nYour Team Invite Code is: {team.code}\nShare this code with your friends so they can request to join your team!\n\nBest of luck,\nThe HackNest Team",
-                            from_email=settings.DEFAULT_FROM_EMAIL,
-                            recipient_list=[request.user.email],
-                            fail_silently=True
-                        )
-                    except Exception as e:
-                        print("Email error:", e)
+
             
             elif action == 'join_team':
                 team_code = request.POST.get('team_code', '').strip().upper()
@@ -254,16 +247,7 @@ def studenthome_view(request):
                                 )
                                 success = f"Successfully accepted {request_user.email} into your team!"
                                 
-                                try:
-                                    send_mail(
-                                        subject="HackNest - Team Join Request Approved",
-                                        message=f"Hi {request_user.first_name or request_user.username},\n\nGreat news! Your request to join team '{team.name}' on HackNest has been APPROVED by the host.\n\nLog in now to see your team details: http://127.0.0.1:8000/studenthome/\n\nBest of luck,\nThe HackNest Team",
-                                        from_email=settings.DEFAULT_FROM_EMAIL,
-                                        recipient_list=[request_user.email],
-                                        fail_silently=True
-                                    )
-                                except Exception as e:
-                                    print("Email error:", e)
+
                                     
                         elif response_type == 'reject':
                             notification.status = 'REJECTED'
@@ -278,16 +262,7 @@ def studenthome_view(request):
                             )
                             success = f"You have rejected {request_user.email}'s join request."
                             
-                            try:
-                                send_mail(
-                                    subject="HackNest - Team Join Request Update",
-                                    message=f"Hi {request_user.first_name or request_user.username},\n\nWe regret to inform you that your request to join team '{team.name}' on HackNest was not accepted by the host.\n\nYou can still try to create a new team or request to join other teams.\n\nBest regards,\nThe HackNest Team",
-                                    from_email=settings.DEFAULT_FROM_EMAIL,
-                                    recipient_list=[request_user.email],
-                                    fail_silently=True
-                                )
-                            except Exception as e:
-                                print("Email error:", e)
+
                 except Notification.DoesNotExist:
                     error = "Notification not found."
 
@@ -305,20 +280,77 @@ def studenthome_view(request):
                 except Notification.DoesNotExist:
                     error = "Notification not found."
 
+            elif action == 'delete_team':
+                team_id = request.POST.get('team_id')
+                try:
+                    team = Team.objects.get(id=team_id)
+                    if team.creator == request.user:
+                        team_name = team.name
+                        # Send email/notifications to all members before deleting
+                        for member in team.members.all():
+                            if member != request.user:
+                                Notification.objects.create(
+                                    user=member,
+                                    message=f"The team '{team_name}' has been permanently disbanded by the host.",
+                                    notification_type='INFO'
+                                )
+
+                        team.delete()
+                        success = f"Team '{team_name}' has been permanently deleted, and the name is now freed up!"
+                    else:
+                        error = "Only the team creator can delete the team."
+                except Team.DoesNotExist:
+                    error = "Team not found."
+
+            elif action == 'remove_member':
+                team_id = request.POST.get('team_id')
+                member_id = request.POST.get('member_id')
+                try:
+                    team = Team.objects.get(id=team_id)
+                    if team.creator == request.user:
+                        try:
+                            member_to_remove = User.objects.get(id=member_id)
+                            if member_to_remove == team.creator:
+                                error = "You cannot remove yourself (the creator) from the team."
+                            elif member_to_remove in team.members.all():
+                                team.members.remove(member_to_remove)
+                                Notification.objects.create(
+                                    user=member_to_remove,
+                                    message=f"You have been removed from the team '{team.name}' by the host.",
+                                    notification_type='INFO'
+                                )
+
+                                success = f"Successfully removed {member_to_remove.email} from the team."
+                            else:
+                                error = "This user is not a member of your team."
+                        except User.DoesNotExist:
+                            error = "User not found."
+                    else:
+                        error = "Only the team creator can remove members."
+                except Team.DoesNotExist:
+                    error = "Team not found."
+
             elif action == 'leave_team':
                 team_id = request.POST.get('team_id')
                 try:
                     team = Team.objects.get(id=team_id)
                     if request.user in team.members.all():
-                        team.members.remove(request.user)
-                        # If no members are left, clean up the team
-                        if team.members.count() == 0:
-                            team.delete()
-                        success = "You have successfully left the team."
+                        if request.user == team.creator:
+                            error = "As the creator, you must delete the team to leave it."
+                        else:
+                            team.members.remove(request.user)
+                            # Notify the creator that a member left
+                            Notification.objects.create(
+                                user=team.creator,
+                                message=f"{request.user.email} has left your team '{team.name}'.",
+                                notification_type='INFO'
+                            )
+                            success = "You have successfully left the team."
                     else:
                         error = "You are not a member of this team."
                 except Team.DoesNotExist:
                     error = "Team not found."
+        
         
         # Fetch current user's teams, registered hackathons, and notifications
         teams = request.user.joined_teams.all()
@@ -365,18 +397,17 @@ def profile_view(request):
             profile.about_me = request.POST.get('about_me')
             profile.skills = request.POST.get('skills')
             
-            if 'profile_photo' in request.FILES:
-                profile.profile_photo = request.FILES['profile_photo']
+            if 'remove_photo' in request.POST:
+                if profile.profile_photo:
+                    profile.profile_photo.delete()
+                    profile.profile_photo = None
+                success_msg = "Profile photo removed successfully!"
+            else:
+                if 'profile_photo' in request.FILES:
+                    profile.profile_photo = request.FILES['profile_photo']
+                success_msg = "Profile updated successfully!"
                 
             profile.save()
-            success_msg = "Profile updated successfully!"
-            
-        elif 'remove_photo' in request.POST:
-            if profile.profile_photo:
-                profile.profile_photo.delete()
-                profile.profile_photo = None
-                profile.save()
-            success_msg = "Profile photo removed successfully!"
             
         elif 'change_email' in request.POST:
             new_email = request.POST.get('new_email')

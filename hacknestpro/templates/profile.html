@@ -6,21 +6,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Profile | HackNest</title>
-    <!-- Google Fonts -->
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Poppins:wght@300;400;500;600;700&family=Kalam:wght@400;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --bg: #ffffff;
-            --text-main: #111827;
-            --text-muted: #6b7280;
-            --border: #e5e7eb;
-            --primary: #111827;
-            --primary-hover: #030712;
-            --cyan: #06b6d4;
+            --agency-bg: #0c0806;
+            --agency-accent: #ff5722;
+            --agency-accent-hover: #e64a19;
+            --agency-text-primary: #ffffff;
+            --agency-text-muted: #8c827d;
+            --agency-border: rgba(255, 87, 34, 0.08);
+            --agency-badge-bg: #150f0c;
+            --agency-badge-border: #2c1e19;
+            --agency-font-display: 'Bebas Neue', sans-serif;
+            --agency-font-mono: 'Space Mono', 'Fira Code', monospace;
+            
+            --bg: #0c0806;
+            --text-main: #ffffff;
+            --text-muted: #8c827d;
+            --border: rgba(255, 87, 34, 0.15);
+            --primary: #ff5722;
+            --primary-hover: #e64a19;
         }
 
         * {
@@ -32,8 +41,154 @@
         body, html {
             background-color: var(--bg);
             color: var(--text-main);
-            font-family: 'Inter', sans-serif;
+            font-family: 'Poppins', sans-serif;
             min-height: 100vh;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* Custom Orange Cursor */
+        html,
+        body,
+        a,
+        button,
+        input,
+        select,
+        textarea,
+        [role="button"],
+        .scramble-trigger {
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20"><path fill="%23ff5722" stroke="%23ffffff" stroke-width="1.5" d="M2.5,2v13.5l3.8-3.8l2.6,5.1l2.4-1.2l-2.6-5.1h5.3z"/></svg>') 1 1, auto !important;
+        }
+
+        .cursor-glow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, rgba(255, 87, 34, 0.12) 0%, rgba(255, 87, 34, 0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            will-change: transform;
+            transform: translate3d(-1000px, -1000px, 0);
+        }
+
+        /* Grid lines overlay */
+        .hero-grid-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .hero-grid-overlay .grid-line {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: var(--agency-border);
+        }
+
+        /* Radial glow background */
+        .hero-glow-bg {
+            position: absolute;
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 700px;
+            height: 700px;
+            background: radial-gradient(circle, rgba(255, 87, 34, 0.08) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+            filter: blur(50px);
+        }
+
+        .decor-element {
+            position: absolute;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Redesigned Navigation Bar */
+        .agency-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 30px 0;
+            border-bottom: 1px solid var(--agency-border);
+            background: transparent;
+            position: relative;
+            z-index: 10;
+            margin-bottom: 40px;
+        }
+
+        .agency-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .agency-logo-text {
+            font-family: 'Poppins', sans-serif;
+            font-size: 22px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+        }
+
+        .agency-logo-text span {
+            color: var(--agency-accent);
+        }
+
+        .agency-nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .agency-nav-links a {
+            text-decoration: none;
+            color: var(--agency-text-muted);
+            font-family: 'Poppins', sans-serif;
+            font-size: 12.5px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: color 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            height: 24px;
+            line-height: 1;
+        }
+
+        .agency-nav-links a:hover {
+            color: var(--agency-accent);
+            text-shadow: 0 0 10px rgba(255, 87, 34, 0.4);
+        }
+
+        .agency-nav-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+            cursor: pointer;
         }
 
         /* ── Profile Dropdown Card ── */
@@ -42,17 +197,18 @@
             top: calc(100% + 15px);
             right: 0;
             width: 240px;
-            background: #ffffff;
-            border: 1px solid #e5e7eb;
+            background: #150f0c;
+            border: 1px solid rgba(255, 87, 34, 0.2);
             border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 87, 34, 0.1);
+            backdrop-filter: blur(10px);
             padding: 16px;
             display: none;
             flex-direction: column;
             gap: 12px;
             z-index: 100;
             cursor: default;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             opacity: 0;
             transform: translateY(-10px);
         }
@@ -72,21 +228,21 @@
         .dropdown-name {
             font-size: 15px;
             font-weight: 600;
-            color: var(--text-main);
+            color: #ffffff;
             font-family: 'Poppins', sans-serif;
             text-align: left;
         }
 
         .dropdown-email {
             font-size: 12px;
-            color: var(--text-muted);
+            color: var(--agency-text-muted);
             font-family: 'Poppins', sans-serif;
             text-align: left;
         }
 
         .dropdown-divider {
             height: 1px;
-            background: #e5e7eb;
+            background: rgba(255, 255, 255, 0.08);
             margin: 4px 0;
         }
 
@@ -104,7 +260,7 @@
             align-items: center;
             gap: 10px;
             padding: 10px 12px;
-            color: #374151;
+            color: #cbd5e1;
             text-decoration: none;
             font-size: 13.5px;
             font-weight: 500;
@@ -114,21 +270,21 @@
         }
 
         .dropdown-item:hover {
-            background: #f3f4f6;
-            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
         }
 
         .dropdown-item svg {
-            color: var(--text-muted);
+            color: #cbd5e1;
             transition: color 0.2s ease;
         }
 
         .dropdown-item:hover svg {
-            color: var(--text-main);
+            color: #ffffff;
         }
 
         .logout-item:hover {
-            background: rgba(239, 68, 68, 0.05);
+            background: rgba(239, 68, 68, 0.1);
             color: #ef4444;
         }
 
@@ -136,69 +292,31 @@
             color: #ef4444;
         }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 40px;
-        }
-
-        /* Navbar */
-        .macbease-nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 80px;
-            border-bottom: 1px solid var(--border);
-            position: relative;
-            z-index: 10;
-            margin-bottom: 40px;
-        }
-
-        .macbease-logo {
-            font-family: 'Poppins', sans-serif;
-            font-size: 24px;
-            font-weight: 800;
-            color: #000000;
-            letter-spacing: -0.5px;
-            text-decoration: none;
-        }
-
-        .macbease-logo span {
-            background: linear-gradient(180deg, #38bdf8 30%, #0ea5e9 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .macbease-nav-links {
-            display: flex;
-            list-style: none;
-            gap: 32px;
-        }
-
-        .macbease-nav-links a {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 15px;
-            transition: color 0.2s ease;
-        }
-
-        .macbease-nav-links a:hover {
-            color: var(--text-main);
-        }
-
         /* Settings Panels */
+        section {
+            background: #150f0c;
+            border: 1px solid rgba(255, 87, 34, 0.15);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+            position: relative;
+            z-index: 2;
+        }
+
         .section-header {
             font-family: 'Poppins', sans-serif;
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 700;
-            color: var(--text-main);
-            margin-bottom: 24px;
+            color: #ffffff;
+            border-bottom: 1.5px solid rgba(255, 87, 34, 0.2);
+            padding-bottom: 12px;
+            margin-bottom: 28px;
         }
 
         .divider {
             border: 0;
-            border-top: 1px solid var(--border);
+            border-top: 1px solid rgba(255, 87, 34, 0.15);
             margin: 36px 0;
         }
 
@@ -215,11 +333,12 @@
             height: 80px;
             border-radius: 50%;
             overflow: hidden;
-            background: linear-gradient(135deg, #06b6d4, #3b82f6);
+            background: linear-gradient(135deg, #ff5722, #e64a19);
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 1px solid var(--border);
+            border: 1.5px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 0 10px rgba(255, 87, 34, 0.4);
         }
 
         .photo-preview img {
@@ -251,33 +370,39 @@
         .btn-change-image {
             background-color: var(--primary);
             color: #ffffff;
-            font-size: 13.5px;
-            font-weight: 600;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             border: none;
             padding: 8px 16px;
             border-radius: 6px;
             cursor: pointer;
-            transition: background 0.2s ease;
+            transition: all 0.2s ease;
         }
 
         .btn-change-image:hover {
             background-color: var(--primary-hover);
+            box-shadow: 0 0 10px rgba(255, 87, 34, 0.3);
         }
 
         .btn-remove-image {
-            background-color: #f3f4f6;
-            color: var(--text-main);
-            font-size: 13.5px;
-            font-weight: 500;
-            border: 1px solid #e5e7eb;
+            background-color: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             padding: 8px 16px;
             border-radius: 6px;
             cursor: pointer;
-            transition: background 0.2s ease;
+            transition: all 0.2s ease;
         }
 
         .btn-remove-image:hover {
-            background-color: #e5e7eb;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
         }
 
         .photo-hint {
@@ -304,18 +429,21 @@
         }
 
         .form-group label {
-            font-size: 13px;
-            font-weight: 600;
-            color: #374151;
+            font-size: 12.5px;
+            font-weight: 700;
+            color: #cbd5e1;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-family: 'Poppins', sans-serif;
         }
 
         .form-input {
             width: 100%;
-            background: #ffffff;
-            border: 1px solid var(--border);
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 87, 34, 0.15);
             border-radius: 8px;
             padding: 12px 14px;
-            color: var(--text-main);
+            color: #ffffff;
             font-size: 14.5px;
             font-family: inherit;
             transition: all 0.2s ease;
@@ -323,8 +451,9 @@
 
         .form-input:focus {
             outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+            border-color: #ff5722;
+            box-shadow: 0 0 0 3px rgba(255, 87, 34, 0.25);
+            background: rgba(255, 255, 255, 0.05);
         }
 
         .form-textarea {
@@ -337,8 +466,8 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 16px 0;
-            border-bottom: 1px solid #f3f4f6;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255, 87, 34, 0.1);
         }
 
         .settings-row:last-child {
@@ -378,11 +507,13 @@
         }
 
         .btn-action-light {
-            background-color: #f3f4f6;
-            color: var(--text-main);
-            font-size: 13px;
-            font-weight: 600;
-            border: 1px solid #e5e7eb;
+            background-color: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             padding: 8px 16px;
             border-radius: 6px;
             cursor: pointer;
@@ -390,82 +521,15 @@
         }
 
         .btn-action-light:hover {
-            background-color: #e5e7eb;
-        }
-
-        /* Toggle Switches */
-        .toggle-switch {
-            position: relative;
-            display: inline-block;
-            width: 48px;
-            height: 24px;
-        }
-
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .toggle-slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #e5e7eb;
-            transition: .3s;
-            border-radius: 24px;
-        }
-
-        .toggle-slider:before {
-            position: absolute;
-            content: "";
-            height: 18px;
-            width: 18px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            transition: .3s;
-            border-radius: 50%;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.15);
-        }
-
-        input:checked + .toggle-slider {
-            background-color: var(--primary);
-        }
-
-        input:checked + .toggle-slider:before {
-            transform: translateX(24px);
-        }
-
-        /* Delete details style */
-        .text-red {
-            color: #b91c1c;
-        }
-
-        .btn-delete {
-            background-color: #fef2f2;
-            color: #b91c1c;
-            border: 1px solid #fee2e2;
-            font-size: 13px;
-            font-weight: 600;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .btn-delete:hover {
-            background-color: #fee2e2;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
         }
 
         /* Dynamic Password Form Slide Down styling */
         .password-form-container {
             display: none;
-            background-color: #f9fafb;
-            border: 1px solid #e5e7eb;
+            background-color: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 87, 34, 0.15);
             border-radius: 12px;
             padding: 24px;
             margin-top: 16px;
@@ -479,18 +543,24 @@
         .btn-save-profile {
             background-color: var(--primary);
             color: #ffffff;
-            font-size: 14.5px;
-            font-weight: 600;
+            font-size: 13.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
             border: none;
             padding: 12px 28px;
             border-radius: 6px;
             cursor: pointer;
-            transition: background 0.2s ease;
+            transition: all 0.2s ease;
             margin-top: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .btn-save-profile:hover {
             background-color: var(--primary-hover);
+            box-shadow: 0 0 15px rgba(255, 87, 34, 0.4);
         }
 
         /* Alerts */
@@ -499,37 +569,78 @@
             border-radius: 8px;
             font-size: 14px;
             margin-bottom: 24px;
-            font-weight: 500;
+            font-weight: 600;
+            position: relative;
+            z-index: 2;
         }
 
         .alert-success {
-            background: rgba(16, 185, 129, 0.08);
+            background: rgba(16, 185, 129, 0.1);
             border: 1px solid #10b981;
             color: #10b981;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.15);
         }
 
         .alert-error {
-            background: rgba(239, 68, 68, 0.08);
+            background: rgba(239, 68, 68, 0.1);
             border: 1px solid #ef4444;
             color: #ef4444;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.15);
         }
     </style>
 </head>
 
 <body>
+    <!-- Grid lines overlay -->
+    <div class="hero-grid-overlay">
+        <div class="grid-line" style="left: 16.66%;"></div>
+        <div class="grid-line" style="left: 33.33%;"></div>
+        <div class="grid-line" style="left: 50%;"></div>
+        <div class="grid-line" style="left: 66.66%;"></div>
+        <div class="grid-line" style="left: 83.33%;"></div>
+    </div>
+
+    <!-- Background Glow -->
+    <div class="hero-glow-bg"></div>
+
+    <!-- Decorative elements matching home page -->
+    <!-- Floating star/sparkle on the left -->
+    <div class="decor-element" style="top: 30%; left: 8%;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M12 0L14.5 9.5L24 12L14.5 14.5L12 24L9.5 14.5L0 12L9.5 9.5L12 0Z" fill="rgba(255, 87, 34, 0.25)" />
+        </svg>
+    </div>
+    <!-- Target/crosshair circle on the right -->
+    <div class="decor-element" style="bottom: 12%; right: 8%;">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" stroke="rgba(255, 87, 34, 0.15)" stroke-width="1.2">
+            <circle cx="24" cy="24" r="20" />
+            <circle cx="24" cy="24" r="8" />
+            <line x1="24" y1="0" x2="24" y2="48" />
+            <line x1="0" y1="24" x2="48" y2="24" />
+        </svg>
+    </div>
+
     <div class="container">
         <!-- Navbar -->
-        <nav class="macbease-nav">
-            <a href="{% url 'studenthome' %}" class="macbease-logo">Hack<span>Nest</span>.</a>
+        <nav class="agency-nav">
+            <!-- Logo -->
+            <a href="{% url 'studenthome' %}" class="agency-logo">
+                <svg width="34" height="24" viewBox="0 0 34 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 2H14L10 12L14 22H4L0 12L4 2Z" fill="#ff5722" />
+                    <path d="M20 2H30L26 12L30 22H20L16 12L20 2Z" fill="#ff5722" />
+                </svg>
+                <span class="agency-logo-text">Hack<span>Nest</span></span>
+            </a>
 
-            <ul class="macbease-nav-links">
-                <li><a href="{% url 'studenthome' %}">Home</a></li>
-                <li><a href="{% url 'studenthome' %}#hackathons">Hackathons</a></li>
-                <li><a href="#">About</a></li>
+            <!-- Navigation Links -->
+            <ul class="agency-nav-links">
+                <li><a href="{% url 'studenthome' %}" class="scramble-trigger scramble-text">Home</a></li>
+                <li><a href="{% url 'studenthome' %}#hackathons" class="scramble-trigger scramble-text">Hackathons</a></li>
+                <li><a href="#" class="scramble-trigger scramble-text">About</a></li>
             </ul>
 
-            <div class="macbease-nav-profile" style="display: flex; align-items: center; gap: 12px; position: relative; cursor: pointer;" onclick="document.getElementById('profile-dropdown').classList.toggle('active')">
-                <div class="profile-avatar" style="width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #06b6d4, #3b82f6); display: flex; align-items: center; justify-content: center; font-family: 'Poppins', sans-serif; font-weight: 700; color: #ffffff; font-size: 15px; border: 1.5px solid rgba(255, 255, 255, 0.25); box-shadow: 0 0 10px rgba(6, 182, 212, 0.4); text-transform: uppercase; overflow: hidden;">
+            <div class="agency-nav-profile" style="display: flex; align-items: center; gap: 12px; position: relative; cursor: pointer;" onclick="event.stopPropagation(); document.getElementById('profile-dropdown').classList.toggle('active');">
+                <div class="profile-avatar" style="width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #ff5722, #e64a19); display: flex; align-items: center; justify-content: center; font-family: 'Poppins', sans-serif; font-weight: 700; color: #ffffff; font-size: 15px; border: 1.5px solid rgba(255, 255, 255, 0.25); box-shadow: 0 0 10px rgba(255, 87, 34, 0.4); text-transform: uppercase; overflow: hidden;">
                     {% if profile.profile_photo %}
                         <img src="{{ profile.profile_photo.url }}" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;">
                     {% else %}
@@ -540,7 +651,7 @@
                         {% endif %}
                     {% endif %}
                 </div>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="6 9 12 15 18 9"></polyline>
                 </svg>
 
@@ -561,7 +672,7 @@
                                 student@hacknest.com
                             {% endif %}
                         </div>
-                        <div style="font-size: 11px; color: #0ea5e9; font-family: 'Poppins', sans-serif; font-weight: 600; margin-top: 4px; text-align: left;">
+                        <div style="font-size: 11px; color: #ff5722; font-family: 'Poppins', sans-serif; font-weight: 600; margin-top: 4px; text-align: left;">
                             ID: {{ student_id }}
                         </div>
                     </div>
@@ -685,7 +796,7 @@
                 <div class="row-input-wrapper">
                     <div class="form-group row-input-field">
                         <label for="display_email">Email</label>
-                        <input type="email" id="display_email" class="form-input" value="{{ user.email }}" disabled style="background-color: #f9fafb; color: var(--text-muted);">
+                        <input type="email" id="display_email" class="form-input" value="{{ user.email }}" disabled style="color: var(--text-muted);">
                     </div>
                     <button type="button" class="btn-action-light" onclick="toggleEmailForm()">Change email</button>
                 </div>
@@ -715,7 +826,7 @@
                 <div class="row-input-wrapper">
                     <div class="form-group row-input-field">
                         <label for="display_pwd">Password</label>
-                        <input type="password" id="display_pwd" class="form-input" value="••••••••••••" disabled style="background-color: #f9fafb; color: var(--text-muted);">
+                        <input type="password" id="display_pwd" class="form-input" value="••••••••••••" disabled style="color: var(--text-muted);">
                     </div>
                     <button type="button" class="btn-action-light" onclick="togglePasswordForm()">Change password</button>
                 </div>
@@ -748,13 +859,74 @@
     </div>
 
     <script>
-        // Close profile dropdown when clicking outside
-        document.addEventListener("click", (e) => {
-            const profileContainer = document.querySelector(".macbease-nav-profile");
-            const dropdown = document.getElementById("profile-dropdown");
-            if (profileContainer && dropdown && !profileContainer.contains(e.target)) {
-                dropdown.classList.remove("active");
-            }
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Custom Cursor Glow Follower ---
+            const glow = document.createElement('div');
+            glow.className = 'cursor-glow';
+            document.body.appendChild(glow);
+
+            window.addEventListener('mousemove', (e) => {
+                requestAnimationFrame(() => {
+                    glow.style.transform = `translate3d(${e.clientX - 125}px, ${e.clientY - 125}px, 0)`;
+                });
+            });
+
+            document.addEventListener('mouseleave', () => {
+                glow.style.transform = 'translate3d(-1000px, -1000px, 0)';
+            });
+
+            // --- Text Scramble Effect ---
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*";
+            const scrambleTriggers = document.querySelectorAll('.scramble-trigger');
+
+            scrambleTriggers.forEach(trigger => {
+                let interval = null;
+                let isAnimating = false;
+                const targetTextEl = trigger.classList.contains('scramble-text') ? trigger : trigger.querySelector('.scramble-text');
+                if (!targetTextEl) return;
+
+                // Cache original text
+                const originalText = targetTextEl.innerText.trim();
+                targetTextEl.dataset.value = originalText;
+
+                trigger.addEventListener('mouseenter', () => {
+                    if (isAnimating) return;
+                    isAnimating = true;
+                    let iteration = 0;
+                    clearInterval(interval);
+
+                    interval = setInterval(() => {
+                        targetTextEl.innerText = originalText
+                            .split("")
+                            .map((letter, index) => {
+                                if (letter === " ") return " ";
+
+                                if (index < iteration) {
+                                    return originalText[index];
+                                }
+                                return chars[Math.floor(Math.random() * chars.length)];
+                            })
+                            .join("");
+
+                        if (iteration >= originalText.length) {
+                            clearInterval(interval);
+                            targetTextEl.innerText = originalText;
+                            isAnimating = false;
+                        }
+
+                        iteration += 0.6;
+                    }, 20);
+                });
+            });
+
+            // Close dropdowns when clicking outside
+            document.addEventListener("click", (e) => {
+                const profileContainer = document.querySelector(".agency-nav-profile");
+                const dropdown = document.getElementById("profile-dropdown");
+                if (profileContainer && dropdown && !profileContainer.contains(e.target)) {
+                    dropdown.classList.remove("active");
+                }
+            });
         });
 
         // Toggle Password Change form container
