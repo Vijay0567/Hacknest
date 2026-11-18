@@ -190,7 +190,7 @@ Make sure you have installed:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/HackNest.git
+git clone https://github.com/vijay0567/HackNest.git
 ```
 
 ```bash
