@@ -2,7 +2,26 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+
+    ROLE_CHOICES = (
+        ('Student', 'Student'),
+        ('Organizer', 'Organizer'),
+        ('Judge', 'Judge'),
+        ('Admin', 'Admin'),
+    )
+
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name='profile'
+    )
+
+    role = models.CharField(
+        max_length=20,
+        choices=ROLE_CHOICES,
+        default='Student'
+    )
+
     profile_photo = models.FileField(upload_to='profiles/', null=True, blank=True)
     college = models.CharField(max_length=255, null=True, blank=True)
     department = models.CharField(max_length=255, null=True, blank=True)
