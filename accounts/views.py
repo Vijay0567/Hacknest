@@ -8,19 +8,38 @@ from accounts.models import UserProfile, Team, HackathonRegistration, Notificati
 from django.db.models import Q
 from django.http import JsonResponse
 
+
 def login_view(request):
     if request.method == 'POST':
-        email = request.POST.get('username')  # The email field uses name="username" in login.html
+        email = request.POST.get('username')
         password = request.POST.get('password')
-        
+
         user = authenticate(request, username=email, password=password)
+
         if user is not None:
+            profile, created = UserProfile.objects.get_or_create(
+                user=user
+            )
+
             login(request, user)
-            return redirect('studenthome')
+            role = profile.role
+
+            if role == 'Student':
+                return redirect('studenthome')
+            elif role == 'Organizer':
+                return redirect('orihome')
+            elif role == 'Judge':
+                return redirect('judgehome')
+            elif role == 'Admin':
+                return redirect('admin_view')
+
         else:
-            return render(request, 'login.html', {'error': 'Invalid email or password.'})
-            
+            return render(request, 'login.html', {
+                'error': 'Invalid email or password.'
+            })
+
     return render(request, 'login.html')
+
 
 def signup_view(request):
     if request.method == 'POST':
@@ -89,24 +108,69 @@ def otp_verify_view(request):
             
     return render(request, 'otp_verify.html')
 
+
 def orilogin_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-        
+
         user = authenticate(request, username=username, password=password)
+
         if user is not None:
+            profile, created = UserProfile.objects.get_or_create(
+                user=user
+            )
+
             login(request, user)
-            return redirect('studenthome')
+            role = profile.role
+
+            if role == 'Student':
+                return redirect('studenthome')
+            elif role == 'Organizer':
+                return redirect('orihome')
+            elif role == 'Judge':
+                return redirect('judgehome')
+            elif role == 'Admin':
+                return redirect('admin_view')
+
         else:
-            return render(request, 'orilogin.html', {'error': 'Invalid User ID or password.'})
-            
+            return render(request, 'orilogin.html', {
+                'error': 'Invalid User ID or password.'
+            })
+
     return render(request, 'orilogin.html')
 
+
+
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect, render
+
+
+@login_required(login_url='orilogin')
 def orihome_view(request):
+
+    if not hasattr(request.user, 'profile'):
+        return redirect('orilogin')
+
+    if request.user.profile.role != 'Organizer':
+        return redirect('studenthome')
+
     return render(request, 'orihome.html')
 
+
 def studenthome_view(request):
+    
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    if not hasattr(request.user, 'profile'):
+        return redirect('login')
+
+    if request.user.profile.role != 'Student':
+        return redirect('home')
+    
+    
     profile = None
     teams = []
     registered_hackathons = []
@@ -513,6 +577,15 @@ def send_chat_message(request):
 
 
 def admin_view(request):
+    
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    if not hasattr(request.user, 'profile'):
+        return redirect('login')
+
+    if request.user.profile.role != 'Admin':
+        return redirect('home')
     if request.method == 'POST':
         action = request.POST.get('action')
         user_id_to_delete = request.POST.get('delete_user_id')
@@ -541,20 +614,21 @@ def admin_view(request):
         elif action == 'change_role':
             user_id = request.POST.get('user_id')
             role = request.POST.get('role')
-            if user_id and role:
+
+            valid_roles = dict(UserProfile.ROLE_CHOICES)
+
+            if user_id and role in valid_roles:
                 try:
                     user_to_change = User.objects.get(pk=user_id)
+
                     if user_to_change != request.user:
-                        if role == 'Organizer':
-                            user_to_change.is_staff = True
-                            user_to_change.is_superuser = False
-                        elif role == 'Admin':
-                            user_to_change.is_staff = True
-                            user_to_change.is_superuser = True
-                        elif role == 'Student':
-                            user_to_change.is_staff = False
-                            user_to_change.is_superuser = False
-                        user_to_change.save()
+                        profile, created = UserProfile.objects.get_or_create(
+                            user=user_to_change
+                        )
+
+                        profile.role = role
+                        profile.save(update_fields=['role'])
+
                 except User.DoesNotExist:
                     pass
                     
@@ -599,3 +673,17 @@ def admin_view(request):
         'total_colleges': total_colleges,
         'search_query': search_query
     })
+    
+    
+def judgehome_view(request):
+
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    if not hasattr(request.user, 'profile'):
+        return redirect('login')
+
+    if request.user.profile.role != 'Judge':
+        return redirect('home')
+
+    return render(request, 'judgehome.html')
